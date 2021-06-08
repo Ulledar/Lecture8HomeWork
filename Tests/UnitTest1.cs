@@ -35,6 +35,7 @@ namespace Lecture8HomeWork
             Assert.AreEqual(201, response.StatusCode, "We get different Status code");
             Assert.AreEqual(responseDeserialization.Title, title, "We get different title");
             Assert.AreEqual(responseDeserialization.Body, body, "We get different body");
+            Assert.AreEqual(responseDeserialization.UserId, userId, "We get different ID");
             WriteLine(responseBody);
         }
 
@@ -44,12 +45,14 @@ namespace Lecture8HomeWork
             string title = "Homework task. Lecture 8";
             string body = "some body";
             int userId = 69;
+            int id = 1;
 
-            var response = myRes.PutResponse(1 , title, body, userId);
+            var response = myRes.PutResponse(id , title, body, userId);
             var responseBody = Responses.ResponseBody(response);
             var responseDeserialization = Responses.PutDeserialization(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "We get different Status code");
+            Assert.AreEqual(responseDeserialization.Id, id, "We get different ID");
             Assert.AreEqual(responseDeserialization.Title, title, "We get different title");
             Assert.AreEqual(responseDeserialization.Body, body, "We get different body");
             Assert.AreEqual(responseDeserialization.UserId, userId, "We get different ID");
