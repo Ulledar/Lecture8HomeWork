@@ -1,8 +1,5 @@
-using Flurl.Http;
 using Lecture8HomeWork.Framework;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using System.Collections.Generic;
 using static System.Console;
 
 namespace Lecture8HomeWork
