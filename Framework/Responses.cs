@@ -1,6 +1,4 @@
 ﻿using Flurl.Http;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Lecture8HomeWork.Framework
 {
@@ -11,36 +9,36 @@ namespace Lecture8HomeWork.Framework
         const string PostsSegmentOne = "posts/1";
 
 
-        public IFlurlResponse GetResponse()
+        public IFlurlResponse Get()
         {
             var response = flurlClient.Request(PostsSegment).GetAsync().Result;
             return response;
         }
 
-        public IFlurlResponse PostResponse(string title, string body, int userId)
+        public IFlurlResponse Post(PostsModel model)
         {
             var response = flurlClient.Request(PostsSegment).PostJsonAsync(new
             {
-                title,
-                body,
-                userId,
+                model.Title,
+                model.Body,
+                model.UserId,
             }).Result;
             return response;
         }
 
-        public IFlurlResponse PutResponse(int id, string title, string body, int userId)
+        public IFlurlResponse Put(PostsModel model)
         {
             var response = flurlClient.Request(PostsSegmentOne).PutJsonAsync(new
             {
-                id,
-                title,
-                body,
-                userId,
+                model.Id,
+                model.Title,
+                model.Body,
+                model.UserId,
             }).Result;
             return response;
         }
 
-        public IFlurlResponse PatchResponse(string title)
+        public IFlurlResponse Patch(string title)
         {
             var response = flurlClient.Request(PostsSegmentOne).PatchJsonAsync(new
             {
@@ -49,28 +47,16 @@ namespace Lecture8HomeWork.Framework
             return response;
         }
 
-        public IFlurlResponse DeleteResponse()
+        public IFlurlResponse Delete()
         {
             var response = flurlClient.Request(PostsSegmentOne).DeleteAsync().Result;
             return response;
         }
 
-        public static string ResponseBody(IFlurlResponse resValue)
+        public static string Body(IFlurlResponse resValue)
         {
             var responseBody = resValue.ResponseMessage.Content.ReadAsStringAsync().Result;
             return responseBody;
-        }
-
-        public static PostsModel PutDeserialization(string responseBody)
-        {
-            var responseDeserialization = JsonConvert.DeserializeObject<PostsModel>(responseBody);
-            return responseDeserialization;
-        }
-
-        public static IList<PostsModel> PutDeserializationList(string responseBody)
-        {
-            var responseDeserializationList = JsonConvert.DeserializeObject<IList<PostsModel>>(responseBody);
-            return responseDeserializationList;
-        }
+        }        
     }
 }
