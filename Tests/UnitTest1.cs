@@ -10,20 +10,17 @@ namespace Lecture8HomeWork
     [TestFixture]
     public class Tests
     {
-        readonly IFlurlClient flurlClient = new FlurlClient("https://jsonplaceholder.typicode.com");
+        readonly Responses myRes = new();
 
         [Test]
         public void GetTest()
         {
-            var response = flurlClient.Request("posts").GetAsync().Result;
-            var responseBody = response.ResponseMessage.Content.ReadAsStringAsync().Result;
-            var res = JsonConvert.DeserializeObject<IList<Coments>>(responseBody);
+            var response = myRes.GetResponse();
+            var responseBody = Responses.ResponseBody(response);
+            var deserializationList = Responses.PutDeserializationList(responseBody);
 
-            if (200 == response.StatusCode) WriteLine("Status code 200");
-            if (200 != response.StatusCode) WriteLine("We get different Status code");            
-            Assert.AreEqual(200, response.StatusCode);
-            WriteLine(res[0].Title);
-            WriteLine(res[0].Body);
+            Assert.AreEqual(200, response.StatusCode, "We get different Status code");
+            for (int i = 1; i <= deserializationList.Count; i++) Assert.AreEqual(deserializationList[i - 1].Id, i, "Wrong ID");
             WriteLine(responseBody);
         }
 
@@ -32,22 +29,15 @@ namespace Lecture8HomeWork
         {
             string title = "Homework task. Lecture 8";
             string body = "some body";
+            int userId = 69;
 
-            var response = flurlClient.Request("posts").PostJsonAsync(new
-                {
-                    title = title,
-                    body = body,
-                    userId = 69,
-                });
-            var responseBody = response.Result.ResponseMessage.Content.ReadAsStringAsync().Result;
-            var res = JsonConvert.DeserializeObject<Coments>(responseBody);
+            var response = myRes.PostResponse(title, body, userId);
+            var responseBody = Responses.ResponseBody(response);
+            var responseDeserialization = Responses.PutDeserialization(responseBody);
 
-            if (201 == response.Result.StatusCode) WriteLine("Status code 201");
-            if (201 != response.Result.StatusCode) WriteLine("We get different Status code");
-            Assert.AreEqual(201, response.Result.StatusCode);
-            Assert.AreEqual(res.Title, title);
-            WriteLine(res.Title);
-            WriteLine(res.Body);
+            Assert.AreEqual(201, response.StatusCode, "We get different Status code");
+            Assert.AreEqual(responseDeserialization.Title, title, "We get different title");
+            Assert.AreEqual(responseDeserialization.Body, body, "We get different body");
             WriteLine(responseBody);
         }
 
@@ -56,23 +46,16 @@ namespace Lecture8HomeWork
         {
             string title = "Homework task. Lecture 8";
             string body = "some body";
+            int userId = 69;
 
-            var response = flurlClient.Request("posts/1").PutJsonAsync(new
-            {
-                id = 1,
-                title = title,
-                body = body,
-                userId = 69,
-            });
-            var responseBody = response.Result.ResponseMessage.Content.ReadAsStringAsync().Result;
-            var res = JsonConvert.DeserializeObject<Coments>(responseBody);
+            var response = myRes.PutResponse(1 , title, body, userId);
+            var responseBody = Responses.ResponseBody(response);
+            var responseDeserialization = Responses.PutDeserialization(responseBody);
 
-            if (200 == response.Result.StatusCode) WriteLine("Status code 200");
-            if (200 != response.Result.StatusCode) WriteLine("We get different Status code");
-            Assert.AreEqual(200, response.Result.StatusCode);
-            Assert.AreEqual(res.Title, title);
-            WriteLine(res.Title);
-            WriteLine(res.Body);
+            Assert.AreEqual(200, response.StatusCode, "We get different Status code");
+            Assert.AreEqual(responseDeserialization.Title, title, "We get different title");
+            Assert.AreEqual(responseDeserialization.Body, body, "We get different body");
+            Assert.AreEqual(responseDeserialization.UserId, userId, "We get different ID");
             WriteLine(responseBody);
         }
 
@@ -81,31 +64,22 @@ namespace Lecture8HomeWork
         {
             string title = "Homework task. Lecture 8";
 
-            var response = flurlClient.Request("posts/1").PatchJsonAsync(new
-            {
-                title = title,
-            });
-            var responseBody = response.Result.ResponseMessage.Content.ReadAsStringAsync().Result;
-            var res = JsonConvert.DeserializeObject<Coments>(responseBody);
+            var response = myRes.PatchResponse(title);
+            var responseBody = Responses.ResponseBody(response);
+            var responseDeserialization = Responses.PutDeserialization(responseBody);
 
-            if (200 == response.Result.StatusCode) WriteLine("Status code 200");
-            if (200 != response.Result.StatusCode) WriteLine("We get different Status code");
-            Assert.AreEqual(200, response.Result.StatusCode);
-            Assert.AreEqual(res.Title, title);
-            WriteLine(res.Title);
-            WriteLine(res.Body);
+            Assert.AreEqual(200, response.StatusCode, "We get different Status code");
+            Assert.AreEqual(responseDeserialization.Title, title, "We get different title");
             WriteLine(responseBody);
         }
 
         [Test]
         public void DeleteTest()
         {
-            var response = flurlClient.Request("posts/1").DeleteAsync().Result;
-            var responseBody = response.ResponseMessage.Content.ReadAsStringAsync().Result;
+            var response = myRes.DeleteResponse();
+            var responseBody = Responses.ResponseBody(response);
 
-            if (200 == response.StatusCode) WriteLine("Status code 200");
-            if (200 != response.StatusCode) WriteLine("We get different Status code");
-            Assert.AreEqual(200, response.StatusCode);
+            Assert.AreEqual(200, response.StatusCode, "We get different Status code");
             WriteLine(responseBody);
             WriteLine(response.ResponseMessage.StatusCode.ToString());
             WriteLine("Status code " + (int)response.ResponseMessage.StatusCode);
