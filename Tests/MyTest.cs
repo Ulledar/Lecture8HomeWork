@@ -19,7 +19,7 @@ namespace Lecture8HomeWork
             var deserializationList = BodyParser.GetDesList(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
-            for (int i = 1; i <= deserializationList.Count; i++) Assert.AreEqual(i, deserializationList[i - 1].Id, "Wrong ID");
+            for (int i = 1; i <= deserializationList.Count; i++) Assert.AreEqual(i, deserializationList[i - 1].id, "Wrong ID");
             WriteLine(responseBody);
         }
 
@@ -29,9 +29,9 @@ namespace Lecture8HomeWork
             string postSegment = "posts";
 
             CreatePostModel testData = new();
-            testData.Body = "some body";
-            testData.Title = "Homework task. Lecture 8";
-            testData.UserId = 69;
+            testData.body = "some body";
+            testData.title = "Homework task. Lecture 8";
+            testData.userId = 69;
 
             var response = myRes.Post<CreatePostModel>(testData, postSegment);
             var responseBody = HttpClient.Body(response);
@@ -48,10 +48,10 @@ namespace Lecture8HomeWork
             string postSegment = "posts/1";
 
             UpdatePostModel testData = new();
-            testData.Body = "some body";
-            testData.Title = "Homework task. Lecture 8";
-            testData.UserId = 69;
-            testData.Id = 1;
+            testData.body = "some body";
+            testData.title = "Homework task. Lecture 8";
+            testData.userId = 69;
+            testData.id = 1;
 
             var response = myRes.Put<UpdatePostModel>(testData, postSegment);
             var responseBody = HttpClient.Body(response);
@@ -73,7 +73,7 @@ namespace Lecture8HomeWork
             var responseDeserialization = BodyParser.GetDes(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
-            Assert.AreEqual(title, responseDeserialization.Title, "Title is mismatched");
+            Assert.AreEqual(title, responseDeserialization.title, "Title is mismatched");
             WriteLine(responseBody);
         }
 
