@@ -7,32 +7,35 @@ namespace Lecture8HomeWork
     [TestFixture]
     public class MyTest
     {
-        readonly Responses myRes = new ();
+        readonly HttpClient myRes = new ();
 
         [Test]
         public void GetTest()
         {
-            var response = myRes.Get();
-            var responseBody = Responses.Body(response);
-            var deserializationList = ParseModel.GetDesList(responseBody);
+            string postSegment = "posts";
+
+            var response = myRes.Get(postSegment);
+            var responseBody = HttpClient.Body(response);
+            var deserializationList = BodyParser.GetDesList(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
             for (int i = 1; i <= deserializationList.Count; i++) Assert.AreEqual(i, deserializationList[i - 1].Id, "Wrong ID");
             WriteLine(responseBody);
-        }               
+        }
 
         [Test]
         public void PostTest()
         {
-            PostsModel testData = new();
+            string postSegment = "posts";
+
+            CreatePostModel testData = new();
             testData.Body = "some body";
             testData.Title = "Homework task. Lecture 8";
             testData.UserId = 69;
-            testData.Id = 101;
 
-            var response = myRes.Post(testData);
-            var responseBody = Responses.Body(response);
-            var responseDeserialization = ParseModel.GetDes(responseBody);
+            var response = myRes.Post<CreatePostModel>(testData, postSegment);
+            var responseBody = HttpClient.Body(response);
+            var responseDeserialization = BodyParser.GetDes(responseBody);
 
             Assert.AreEqual(201, response.StatusCode, "Status code is mismatched");
             Validation.AssertPostModel(testData, responseDeserialization);
@@ -42,29 +45,32 @@ namespace Lecture8HomeWork
         [Test]
         public void PutTest()
         {
-            PostsModel testData = new();
+            string postSegment = "posts/1";
+
+            UpdatePostModel testData = new();
             testData.Body = "some body";
             testData.Title = "Homework task. Lecture 8";
             testData.UserId = 69;
             testData.Id = 1;
 
-            var response = myRes.Put(testData);
-            var responseBody = Responses.Body(response);
-            var responseDeserialization = ParseModel.GetDes(responseBody);
+            var response = myRes.Put<UpdatePostModel>(testData, postSegment);
+            var responseBody = HttpClient.Body(response);
+            var responseDeserialization = BodyParser.GetDes(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
-            Validation.AssertPostModel(testData, responseDeserialization);
+            Validation.AssertPutModel(testData, responseDeserialization);
             WriteLine(responseBody);
         }
 
         [Test]
         public void PatchTest()
         {
+            string postSegment = "posts/1";
             string title = "Homework task. Lecture 8";
 
-            var response = myRes.Patch(title);
-            var responseBody = Responses.Body(response);
-            var responseDeserialization = ParseModel.GetDes(responseBody);
+            var response = myRes.Patch(title, postSegment);
+            var responseBody = HttpClient.Body(response);
+            var responseDeserialization = BodyParser.GetDes(responseBody);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
             Assert.AreEqual(title, responseDeserialization.Title, "Title is mismatched");
@@ -74,8 +80,10 @@ namespace Lecture8HomeWork
         [Test]
         public void DeleteTest()
         {
-            var response = myRes.Delete();
-            var responseBody = Responses.Body(response);
+            string postSegment = "posts/1";
+
+            var response = myRes.Delete(postSegment);
+            var responseBody = HttpClient.Body(response);
 
             Assert.AreEqual(200, response.StatusCode, "Status code is mismatched");
             WriteLine(responseBody);

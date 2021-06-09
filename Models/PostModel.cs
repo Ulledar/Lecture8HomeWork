@@ -1,7 +1,7 @@
 ﻿
 namespace Lecture8HomeWork.Framework
 {
-    class PostsModel
+    class PostModel
     {
         public int UserId { get; set; }
         public int Id { get; set; }
